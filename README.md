@@ -240,28 +240,16 @@ The system can handle various types of data visualization requests:
    "What was the average altitude during the flight?"
    ```
 
-2. **Battery Analysis**
-   ```bash
-   "What was the battery voltage range?"
-   "Show me the battery consumption statistics"
-   "What was the average battery current?"
-   ```
 
-3. **GPS Analysis**
+2. **GPS Analysis**
    ```bash
    "What was the GPS position range?"
    "Show me the GPS altitude statistics"
    "What was the average GPS altitude?"
    ```
 
-4. **Vibration Analysis**
-   ```bash
-   "What were the vibration levels during the flight?"
-   "Show me the vibration statistics"
-   "What was the maximum vibration recorded?"
-   ```
 
-5. **Attitude Analysis**
+4. **Attitude Analysis**
    ```bash
    "What was the roll angle range?"
    "Show me the pitch statistics"
