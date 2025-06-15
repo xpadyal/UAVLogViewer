@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  vue-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules  # Prevent overwrite by host
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    depends_on:
+      - chat-backend
+
+  chat-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=src/backend/chat_service.py
+      - PYTHONPATH=/usr/src/app
+    command: python -m flask run --host=0.0.0.0 --port=5001
+    tty: true

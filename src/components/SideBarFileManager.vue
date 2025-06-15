@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 <template>
     <div>
         <li  v-if="file==null && !sampleLoaded" >
@@ -242,22 +243,62 @@ export default {
             if (event.data.percentage) {
                 this.state.processPercentage = event.data.percentage
             } else if (event.data.availableMessages) {
-                this.$eventHub.$emit('messageTypes', event.data.availableMessages)
+                this.$eventHub.$emit('messageTypes', event.data.availableMessages); // eslint-disable-line semi
             } else if (event.data.metadata) {
                 this.state.metadata = event.data.metadata
-            } else if (event.data.messages) {
-                this.state.messages = event.data.messages
-                this.$eventHub.$emit('messages')
+            } else if (event.data.fullParsedData) {
+                const { types, messages } = event.data.fullParsedData; // eslint-disable-line semi
+
+                this.state.messages = messages; // eslint-disable-line semi
+                this.state.messageTypes = types; // eslint-disable-line semi
+                this.$eventHub.$emit('messages'); // eslint-disable-line semi
+                this.$eventHub.$emit('messageTypes', types); // eslint-disable-line semi
+
+                console.log('Parsed data from worker (fullParsedData):', messages); // eslint-disable-line semi
+
+                // Helper function to convert TypedArrays to regular arrays
+                const convertTypedArrays = (obj) => {
+                    for (const key in obj) {
+                        if (obj[key] instanceof Float64Array) {
+                            obj[key] = Array.from(obj[key]); // eslint-disable-line semi
+                        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                            convertTypedArrays(obj[key]); // eslint-disable-line semi
+                        }
+                    }
+                }; // eslint-disable-line semi
+
+                // eslint-disable-line max-len
+                const dataToSend = JSON.parse(
+                    JSON.stringify(messages)
+                )
+                convertTypedArrays(dataToSend); // eslint-disable-line semi
+
+                console.log('Sending to backend:', dataToSend); // eslint-disable-line semi
+
+                // Send parsed data to backend
+                fetch('http://localhost:5001/api/set-flight-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataToSend)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Backend response:', data); // eslint-disable-line semi
+                    this.$eventHub.$emit('flightDataLoaded') // Notify that flight data is loaded
+                })
+                .catch(err => {
+                    console.error('Error sending parsed data to backend:', err); // eslint-disable-line semi
+                }); // eslint-disable-line semi
             } else if (event.data.messagesDoneLoading) {
-                this.$eventHub.$emit('messagesDoneLoading')
+                this.$eventHub.$emit('messagesDoneLoading'); // eslint-disable-line semi
             } else if (event.data.messageType) {
-                this.state.messages[event.data.messageType] = event.data.messageList
-                this.$eventHub.$emit('messages')
+                this.state.messages[event.data.messageType] = event.data.messageList; // eslint-disable-line semi
+                this.$eventHub.$emit('messages'); // eslint-disable-line semi
             } else if (event.data.files) {
-                this.state.files = event.data.files
-                this.$eventHub.$emit('messages')
+                this.state.files = event.data.files; // eslint-disable-line semi
+                this.$eventHub.$emit('messages'); // eslint-disable-line semi
             } else if (event.data.url) {
-                this.downloadFileFromURL(event.data.url)
+                this.downloadFileFromURL(event.data.url); // eslint-disable-line semi
             }
         }
         const url = document.location.search.split('?file=')[1]

@@ -16,6 +16,7 @@
             <CesiumSettingsWidget />
         </div>
         <div id="cesiumContainer"></div>
+        <ChatComponent ref="chatComponent" />
     </div>
 </template>
 
@@ -75,6 +76,7 @@ import CesiumSettingsWidget from './widgets/CesiumSettingsWidget.vue'
 import ColorCoderMode from './cesiumExtra/colorCoderMode.js'
 import ColorCoderRange from './cesiumExtra/colorCoderRange.js'
 import ColorCoderPlot from './cesiumExtra/colorCoderPlot.js'
+import ChatComponent from './ChatComponent.vue'
 
 import {
     generateHull,
@@ -113,7 +115,8 @@ export default {
         }
     },
     components: {
-        CesiumSettingsWidget
+        CesiumSettingsWidget,
+        ChatComponent
     },
     created () {
         this.updateShader()
@@ -221,6 +224,7 @@ export default {
             this.addCenterVehicleButton()
             this.addFitContentsButton()
             this.addCloseButton()
+            this.addChatButton()
 
             for (const pos of this.state.currentTrajectory) {
                 this.correctedTrajectory.push(Cartographic.fromDegrees(pos[0], pos[1], pos[2]))
@@ -582,6 +586,29 @@ export default {
                 this.$nextTick(() => {
                     this.viewer.flyTo(this.model)
                 })
+            })
+        },
+        addChatButton () {
+            /* Creates the chat button on the Cesium toolbar */
+            const toolbar = document.getElementsByClassName('cesium-viewer-toolbar')[0]
+
+            let chatButton = document.createElement('span')
+            if (chatButton.classList) {
+                chatButton.classList.add('cesium-navigationHelpButton-wrapper')
+            } else {
+                chatButton.className += ' ' + 'cesium-navigationHelpButton-wrapper'
+            }
+            chatButton.innerHTML = '' +
+                '<button type="button" ' +
+                'id="cesium-chat-button" ' +
+                'class="cesium-button cesium-toolbar-button"' +
+                'title="Open Chat">' +
+                '<i class="fas fa-solid fa-comments" style="font-style: unset;"></i>' +
+                '</button>'.trim()
+            toolbar.append(chatButton)
+            chatButton = document.getElementById('cesium-chat-button')
+            chatButton.addEventListener('click', () => {
+                this.$refs.chatComponent.showChat()
             })
         },
         onCameraUpdate () {
@@ -1558,7 +1585,7 @@ export default {
         padding: 5px 5px;
         position: absolute;
         top: 0;
-        color: #eee;
+        color: pink;
         font-family: 'Montserrat', sans-serif;
         font-size: 9pt;
         z-index: 1;

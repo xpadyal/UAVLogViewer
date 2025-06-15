@@ -10,6 +10,7 @@ self.addEventListener('message', async function (event) {
         console.log('got bad file message!')
     } else if (event.data.action === 'parse') {
         const data = event.data.file
+        console.log('Data received in worker for parsing:', data);
         if (event.data.isTlog) {
             parser = new mavparser.MavlinkParser()
             parser.processData(data)
@@ -18,8 +19,7 @@ self.addEventListener('message', async function (event) {
             await parser.processData(data)
         } else {
             parser = new DataflashParser(true)
-            parser.processData(data, ['CMD', 'MSG', 'FILE', 'MODE', 'AHR2', 'ATT', 'GPS', 'POS',
-                'XKQ1', 'XKQ', 'NKQ1', 'NKQ2', 'XKQ2', 'PARM', 'MSG', 'STAT', 'EV', 'XKF4', 'FNCE'])
+            parser.processData(data)
         }
 
     } else if (event.data.action === 'loadType') {

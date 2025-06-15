@@ -5,9 +5,7 @@ const config = require('../config')
 const webpack = require('webpack')
 const vueLoaderConfig = require('./vue-loader.conf')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-
-// The path to the Cesium source code
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
@@ -41,7 +39,6 @@ module.exports = {
     sourcePrefix: ' ',
     globalObject: 'self'
   },
-
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
@@ -61,8 +58,12 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client'),
-        resolve('node_modules/mavlink_common_v1.0/parsers')]
+        include: [
+          resolve('src'),
+          resolve('test'),
+          resolve('node_modules/webpack-dev-server/client'),
+          resolve('node_modules/mavlink_common_v1.0/parsers')
+        ]
       },
       {
         test: /\.(png|jpe?g|gif)(\?.*)?$/,
@@ -99,11 +100,10 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
-    ],
+    ]
   },
   resolve: {
     fallback: {
-      // make sure you `npm install path-browserify` to use this
       crypto: require.resolve("crypto-browserify"),
       buffer: require.resolve('buffer/'),
       assert: require.resolve("assert/"),
@@ -112,42 +112,57 @@ module.exports = {
       https: require.resolve("https-browserify"),
       http: require.resolve("stream-http"),
       zlib: require.resolve("browserify-zlib"),
+      vm: require.resolve("vm-browserify"),
+      process: require.resolve("process/browser")
     },
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
-    },
+      '@': resolve('src')
+    }
   },
-  node: {
-  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser'
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, '../static'),
+          to: config.build.assetsSubDirectory,
+          globOptions: {
+            ignore: ['.*']
+          }
+        }
+      ]
+    })
+  ],
   optimization: {
     concatenateModules: false,
     splitChunks: {
-        chunks: 'all',
-        minSize: 30000,
-        maxSize: 300000,
-        minChunks: 1,
-        maxAsyncRequests: 6,
-        maxInitialRequests: 4,
-        automaticNameDelimiter: '~',
-        cacheGroups: {
-            vendors: {
-                test: /[\\/]node_modules[\\/]/,
-                priority: -10
-            },
-            default: {
-                minChunks: 2,
-                priority: -20,
-                reuseExistingChunk: true
-            }
+      chunks: 'all',
+      minSize: 30000,
+      maxSize: 300000,
+      minChunks: 1,
+      maxAsyncRequests: 6,
+      maxInitialRequests: 4,
+      automaticNameDelimiter: '~',
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
         }
+      }
     },
-    moduleIds: 'deterministic', //Added this to retain hash of vendor chunks.
+    moduleIds: 'deterministic',
     runtimeChunk: 'single',
     minimizer: [
-      // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
       `...`,
-      new CssMinimizerPlugin(),
-    ],
+      new CssMinimizerPlugin()
+    ]
   }
 }

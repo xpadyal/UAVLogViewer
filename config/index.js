@@ -33,6 +33,11 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
+    // Add watchOptions to ignore the specific file
+    watchOptions: {
+      ignored: [path.resolve(__dirname, '../src/backend/parsed_flight_data.json')]
+    },
+
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
     // linting errors and warnings will be shown in the console.

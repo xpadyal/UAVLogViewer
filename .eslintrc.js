@@ -32,12 +32,16 @@ module.exports = {
     'generator-star-spacing': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    "indent": ["error", 4],
+    "indent": "off",
     "camelcase": [2, {"properties": "always"}],
     "vue/multi-word-component-names": `off`,
     "vue/no-reserved-component-names": `off`,
     'vue/no-parsing-error': [2, {
           "invalid-first-character-of-tag-name": false
-      }]
+      }],
+    'vue/no-reserved-component-names': 'off',
+    'no-trailing-spaces': 'off',
+    'no-multi-spaces': 'off',
+    'no-multiple-empty-lines': 'off'
   }
 }
