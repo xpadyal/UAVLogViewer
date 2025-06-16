@@ -73,6 +73,7 @@ The system consists of two main components:
 The easiest way to run the complete system is using Docker Compose:
 
 ```bash
+npm install
 # Create a .env file with your Cesium token and OPENAI_API_TOKEN
 "VUE_APP_CESIUM_TOKEN= "your_token_here"
 OPENAI_API_TOKEN= "your_token_here"
