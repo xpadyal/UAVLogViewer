@@ -58,7 +58,7 @@ class VectorStore:
         # Create chunks from simplified data
         self.chunks = []
         for msg_type, data in simplified_data.items():
-            if msg_type in ["flight_log_summary", "overall_flight_duration"]:
+            if msg_type in ["flight_log_summary"]:
                 continue
                 
             chunk = {
